@@ -6,6 +6,11 @@ const PORT = process.env.PORT || 3000;
 io.on('connection', function(socket){
     console.log('User connected');
 
+    socket.on('sendMessage', function(message){
+        const date = new Date();
+        io.emit("arrivedMessage", { ...message, id: date.getTime() });
+    });
+
     socket.on('disconnect', function(){
         console.log('User disconnected');
     });
