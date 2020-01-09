@@ -32,7 +32,7 @@ export default class HomeScreen extends Component {
             this.socket.on("arrivedMessage", message => {
                 this.setState((state) => {
                     return {
-                        messages: [...state.messages, message]
+                        messages: [message, ...state.messages]
                     }
                 })
             })
@@ -54,7 +54,9 @@ export default class HomeScreen extends Component {
                     <View>
                         <TextInput style={styles.textInput}
                                    onChangeText={text => this.setState({username: text})}
-                                   value={this.state.username}/>
+                                   value={this.state.username}
+                                   placeholder={"Enter your name"}
+                        />
                         <Button onPress={this.connect} title={"Connect"}/>
                     </View>
                 )}
@@ -62,7 +64,9 @@ export default class HomeScreen extends Component {
                     <View>
                         <TextInput style={styles.textInput}
                                    onChangeText={text => this.setState({message: text})}
-                                   value={this.state.message}/>
+                                   value={this.state.message}
+                                   placeholder={"Write your message"}
+                        />
                         <Button
                             onPress={this.sendMessage}
                             title={`Send message ${this.state.username}`}
