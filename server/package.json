@@ -1,0 +1,12 @@
+{
+  "name": "talk-to-me-server",
+  "version": "1.0.0",
+  "description": "We would like to help the sociable people spirit to go out",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "SoftTeam",
+  "license": "MIT"
+}
