@@ -17,14 +17,26 @@ export default class HomeScreen extends Component {
             message: "",
             username: "",
             messages: [],
-            connected: false
+            connected: false,
+            location: null
         }
     }
 
-    connect = () => {
-        const URL = "http://192.168.1.2:3000";
+    findCoordinates = async() => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                this.setState({ location: position });
+            },
+            error => Alert.alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    };
+
+    connect = async() => {
+        const URL = "http://192.168.1.7:3000";
 
         try{
+            await this.findCoordinates()
             this.socket = io(URL);
             this.setState({
                 connected: true
@@ -42,8 +54,8 @@ export default class HomeScreen extends Component {
     }
 
     sendMessage = () => {
-        const { username, message } = this.state;
-        this.socket.emit("sendMessage", { username, message });
+        const { username, message, location } = this.state;
+        this.socket.emit("sendMessage", { username, message, location });
     }
 
     render() {
