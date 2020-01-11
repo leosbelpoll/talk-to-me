@@ -24,17 +24,16 @@ export default class HomeScreen extends Component {
 
     findCoordinates = async() => {
         navigator.geolocation.getCurrentPosition(
-          position => {
-            // const location = JSON.stringify(position);
-            this.setState({ location: position });
-          },
-          error => Alert.alert(error.message),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            position => {
+                this.setState({ location: position });
+            },
+            error => Alert.alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );
-      };
+    };
 
     connect = async() => {
-        const URL = "http://192.168.0.104:3001";
+        const URL = "http://192.168.1.7:3000";
 
         try{
             await this.findCoordinates()
@@ -50,7 +49,7 @@ export default class HomeScreen extends Component {
                 })
             })
         } catch (e) {
-            Alert.alert("Error: A message connecting with serve");
+            Alert.alert("Error: A message connecting with server");
         }
     }
 
@@ -75,7 +74,6 @@ export default class HomeScreen extends Component {
                 )}
                 {connected && (
                     <View>
-                        {/* <Text>Location: {this.state.location}</Text> */}
                         <TextInput style={styles.textInput}
                                    onChangeText={text => this.setState({message: text})}
                                    value={this.state.message}
