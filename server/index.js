@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 const PORT = process.env.PORT || 3000;
 
 io.on('connection', function(socket){
-    console.log('User connected');
+    console.log('Socket connected', socket.id, socket.handshake.query);
 
     socket.on('sendMessage', function(message){
         const date = new Date();
