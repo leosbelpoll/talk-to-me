@@ -5,9 +5,12 @@ import {
     StyleSheet,
     Text,
     View,
-    TextInput
+    TextInput,
+    Alert
 } from 'react-native';
 import io from 'socket.io-client';
+
+import configs from '../configs';
 
 export default class HomeScreen extends Component {
 
@@ -33,30 +36,62 @@ export default class HomeScreen extends Component {
     };
 
     connect = async() => {
-        const URL = "http://192.168.1.7:3000";
-
-        try{
-            await this.findCoordinates()
-            this.socket = io(URL);
+        const URL = configs["SERVER_URL"];
+        const { username } = this.state;
+        await this.findCoordinates()
+        this.socket = io.connect(URL, {
+            query: {
+                username
+            }
+        });
+        this.socket.on("connect", () => {
             this.setState({
                 connected: true
+            });
+        });
+        this.socket.on("disconnect", () => {
+            this.setState({
+                connected: false
+            });
+        });
+        this.socket.on("connect_failed", e => {
+            this.setState({
+                connected: false
+            });
+            this.socket.disconnect();
+            this.handleError("connect_failed");
+        });
+        this.socket.on("connect_error", e => {
+            this.setState({
+                connected: false
+            });
+            this.socket.disconnect();
+            this.handleError("connect_error");
+        });
+        this.socket.on("arrivedMessage", message => {
+            this.setState((state) => {
+                return {
+                    messages: [message, ...state.messages]
+                }
             })
-            this.socket.on("arrivedMessage", message => {
-                this.setState((state) => {
-                    return {
-                        messages: [message, ...state.messages]
-                    }
-                })
-            })
-        } catch (e) {
-            Alert.alert("Error: A message connecting with server");
-        }
-    }
+        })
+    };
 
     sendMessage = () => {
         const { username, message, location } = this.state;
-        this.socket.emit("sendMessage", { username, message, location });
-    }
+        try {
+            this.socket.emit("sendMessage", { username, message, location });
+        } catch (e) {
+            this.handleError(e);
+        }
+    };
+
+    handleError = message => {
+        this.setState({
+            connected: false
+        });
+        Alert.alert("ERROR", message);
+    };
 
     render() {
         const { connected } = this.state;
