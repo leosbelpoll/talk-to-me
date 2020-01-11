@@ -11,8 +11,8 @@ io.on('connection', function(socket){
         io.emit("arrivedMessage", { ...message, id: date.getTime() });
     });
 
-    socket.on('disconnect', function(){
-        console.log('User disconnected');
+    socket.on('disconnect', function(socket){
+        console.log('Socket disconnected', socket.id);
     });
 });
 
