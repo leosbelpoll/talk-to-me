@@ -1,3 +1,4 @@
+const location = require("./utils/coordenates")
 const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
@@ -9,6 +10,10 @@ io.on('connection', function(socket){
     socket.on('sendMessage', function(message){
         const date = new Date();
         io.emit("arrivedMessage", { ...message, id: date.getTime() });
+    });
+
+    socket.on('setLocation', function(location){
+        console.log('S', location);
     });
 
     socket.on('disconnect', function(socket){
