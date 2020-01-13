@@ -9,7 +9,7 @@ io.on('connection', function(socket){
 
     socket.on('sendMessage', function(message){
         const date = new Date();
-        io.emit("arrivedMessage", { ...message, id: date.getTime() });
+        io.emit("arrivedMessage", { ...message, id: date.getTime(), username: socket.handshake.query.username  });
     });
 
     socket.on('setLocation', function(location){
