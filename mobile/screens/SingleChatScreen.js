@@ -1,83 +1,146 @@
-import React, {useState} from 'react';
-import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import React, { Component } from 'react';
+import { ScrollView, StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
+import { Header } from 'react-navigation-stack';
 
-export default function SingleChatScreen(props) {
-    const {navigate} = props.navigation;
-    const {message, setMessage} = useState('')
+import styleVariables from "../style_variables";
+
+export default class SingleChatScreen  extends Component {
+
+    constructor(props) {
+        super(props);
+        // const { username } = props.navigation.state.params;
+        const { username } = { username: "Leito" }; // TODO: remove this, just a Mock
+        this.state = {
+            currentUsername: username,
+            message: "",
+            messages: [
+                {
+                    id: 1,
+                    username: "Leito",
+                    text: "Hello"
+                },
+                {
+                    id: 2,
+                    username: "Tomas",
+                    text: "Hey, how are you"
+                },
+                {
+                    id: 3,
+                    username: "Leito",
+                    text: "Everything ok, working on our awesome app :)"
+                },
+                {
+                    id: 4,
+                    username: "Leito",
+                    text: "It's advancing"
+                },
+                {
+                    id: 5,
+                    username: "Tomas",
+                    text: "Yeah, we are going to have the MVP soon hahah"
+                }
+            ]
+        }
+    }
 
     sendMessage = () => {
         const { message } = this.state;
-        try {
-            this.socket.emit("sendMessage", { message });
-        } catch (e) {
-            this.handleError(e);
+        if (message){
+            this.setState((state) => ({
+                messages: [ ...state.messages, {
+                    id: state.messages.length + 1,
+                    username: "Leito",
+                    text: state.message
+                }],
+                message: ""
+            }))
         }
+
+        // try {
+        //     this.socket.emit("sendMessage", { message });
+        // } catch (e) {
+        //     this.handleError(e);
+        // }
     };
 
-    return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.messageContainer}>
-                <Text style={styles.messageUsername}>sdfsdf</Text>
-            </Text>
-            <View style={styles.primary}>
-                <TextInput style={styles.textInput} />
-                <TouchableOpacity>
-                    <View>
-                        <Text style={styles.messageUsername}>Send</Text>
+    render () {
+        return (
+            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={ Header.HEIGHT + 30 } style={[styles.container, {justifyContent: 'center'}]}>
+                <View style={styles.container}>
+                    <ScrollView
+                        style={styles.messagesContainer}
+                        ref={ref => this.scrollView = ref}
+                        onContentSizeChange={()=>{
+                            this.scrollView.scrollToEnd({animated: true});
+                        }}
+                        showsVerticalScrollIndicator={false}>
+                        {this.state.messages.map((message, index) => (
+                            <View
+                                style={[
+                                    styles.chatMessage,
+                                    message.username === this.state.currentUsername ?
+                                        styles.ownMessage : styles.comingMessage,
+                                    index === 0 && {
+                                        marginTop: 20
+                                    }
+                                ]}
+                                key={message.id}
+                            >
+                                <Text>{message.text}</Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+                    <View style={styles.chatBox}>
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={text => this.setState({ message: text })}
+                            value={this.state.message}/>
+                        <Button
+                            onPress={this.sendMessage}
+                            title={`Sw`}
+                            color={styleVariables.PRIMARY_COLOR}
+                        />
                     </View>
-                </TouchableOpacity>
-            </View>
-
-            
-        </ScrollView>
-    );
+                </View>
+            </KeyboardAvoidingView>
+        );
+    }
 }
 
 SingleChatScreen.navigationOptions = {
-    title: 'Chat',
+    title: 'Single Chat',
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 15,
-        backgroundColor: '#fff',
+        paddingHorizontal: 10
     },
-    container: {
-        // borderTopWidth: StyleSheet.hairlineWidth,
-        // borderTopColor: Color.defaultColor,
-        // backgroundColor: Color.white,
-        bottom: 0,
-        left: 0,
-        right: 0,
-      },
-      primary: {
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-      },
-      accessory: {
-        height: 44,
-      },
-      textInput: {
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 16,
-        lineHeight: 16,
-        ...Platform.select({
-          web: {
-            paddingTop: 6,
-            paddingLeft: 4,
-          },
-        }),
-        marginTop: Platform.select({
-          ios: 6,
-          android: 0,
-          web: 6,
-        }),
-        marginBottom: Platform.select({
-          ios: 5,
-          android: 3,
-          web: 4,
-        }),
-      },
+    textInput: {
+        height: 40,
+        borderWidth: 1,
+        marginBottom: 15,
+        padding: 10
+    },
+    chatBox: {
+        display: 'flex'
+    },
+    messagesContainer: {
+
+    },
+    chatMessage:{
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        marginBottom: 10,
+        maxWidth: '70%'
+    },
+    ownMessage: {
+        alignSelf: 'flex-end',
+        backgroundColor: `${styleVariables.PRIMARY_COLOR}30`
+    },
+    comingMessage: {
+        alignSelf: 'flex-start',
+        backgroundColor: 'rgba(0, 0, 0, .06)'
+    }
 });
