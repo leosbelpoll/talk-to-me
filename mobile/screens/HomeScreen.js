@@ -6,8 +6,14 @@ import {
     Text,
     View,
     TextInput,
-    Alert
+    Alert,
+    YellowBox
 } from 'react-native';
+
+YellowBox.ignoreWarnings([
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
+
 import io from 'socket.io-client';
 
 import configs from '../configs';
@@ -25,20 +31,21 @@ export default class HomeScreen extends Component {
         }
     }
 
-    findCoordinates = async() => {
-        navigator.geolocation.getCurrentPosition(
+    findCoordinates = () => {
+        navigator.geolocation.watchPosition(
             position => {
-                this.setState({ location: position });
+
+                this.socket.emit("setLocation", { ...position });
             },
             error => Alert.alert(error.message),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1 }
         );
     };
 
-    connect = async() => {
+    connect = () => {
         const URL = configs["SERVER_URL"];
         const { username } = this.state;
-        await this.findCoordinates()
+        this.findCoordinates()
         this.socket = io.connect(URL, {
             query: {
                 username
@@ -78,9 +85,9 @@ export default class HomeScreen extends Component {
     };
 
     sendMessage = () => {
-        const { username, message, location } = this.state;
+        const { message } = this.state;
         try {
-            this.socket.emit("sendMessage", { username, message, location });
+            this.socket.emit("sendMessage", { message });
         } catch (e) {
             this.handleError(e);
         }
@@ -136,7 +143,6 @@ export default class HomeScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: '#fff',
         margin: 20
     },
     textInput: {
