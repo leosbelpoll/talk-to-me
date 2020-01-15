@@ -140,6 +140,11 @@ export default class HomeScreen extends Component {
     }
 }
 
+HomeScreen.navigationOptions = {
+    title: 'Users',
+    };
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

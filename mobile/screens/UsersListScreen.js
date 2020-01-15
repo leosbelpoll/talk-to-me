@@ -49,7 +49,7 @@ export default function UsersListScreen(props) {
 }
 
 UsersListScreen.navigationOptions = {
-    title: 'UsersList',
+    title: 'Users',
 };
 
 const styles = StyleSheet.create({
