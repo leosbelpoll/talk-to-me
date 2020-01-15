@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import usersReducer from './usersReducer';
+import chatReducer from './chatReducer';
 import configurationsReducer from './configurationsReducer';
 
 export default combineReducers({
-    users: usersReducer,
+    chat: chatReducer,
     configurations: configurationsReducer
 })

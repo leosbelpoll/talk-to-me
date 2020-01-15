@@ -1,7 +1,7 @@
 // Commons
 export const ERROR = 'ERROR';
 
-// Users
+// Chat
 export const FETCH_USERS = 'FETCH_USERS';
 
 // Configurations

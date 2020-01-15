@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet, Text, SafeAreaView, View, FlatList, Image, Button } from 'react-native';
 import { connect } from 'react-redux';
 
-import { fetchUsers } from "../actions/usersAction";
+import { fetchUsers } from "../actions/chatAction";
 
 function Item({ user, onSelect }) {
     return (
@@ -59,7 +59,7 @@ UsersListScreen.navigationOptions = {
 };
 
 const mapStateToProps = state => ({
-    users: state.users.users
+    users: state.chat.users
 });
 
 export default connect(mapStateToProps, { fetchUsers })(UsersListScreen)
