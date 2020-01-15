@@ -10,6 +10,8 @@ import AppNavigator from './navigation/AppNavigator';
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
+  // incluir dependencia
+
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
       <AppLoading
