@@ -6,102 +6,55 @@ import {
     Text,
     View,
     TextInput,
-    Alert,
     YellowBox
 } from 'react-native';
+import { connect } from 'react-redux';
+
+import {
+    onConnect,
+    onCreateMessage,
+    onNewMessage
+} from "../actions/chatAction";
+import configs from "../configs";
 
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
-import io from 'socket.io-client';
-
-import configs from '../configs';
-
-export default class HomeScreen extends Component {
+export class HomeScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            message: "",
             username: "",
-            messages: [],
-            connected: false,
-            location: null
-        }
+            message: ""
+        };
     }
 
-    findCoordinates = () => {
-        navigator.geolocation.watchPosition(
-            position => {
-
-                this.socket.emit("setLocation", { ...position });
-            },
-            error => Alert.alert(error.message),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1 }
-        );
-    };
-
     connect = () => {
-        const URL = configs["SERVER_URL"];
+        const { ioConnect, ioNewMessage } = this.props;
         const { username } = this.state;
-        this.findCoordinates()
-        this.socket = io.connect(URL, {
-            query: {
-                username
-            }
+        const  URL = configs["SERVER_URL"];
+
+        ioConnect(URL, {
+            username,
+            slogan: "Default slogan for now"
         });
-        this.socket.on("connect", () => {
-            this.setState({
-                connected: true
-            });
-        });
-        this.socket.on("disconnect", () => {
-            this.setState({
-                connected: false
-            });
-        });
-        this.socket.on("connect_failed", e => {
-            this.setState({
-                connected: false
-            });
-            this.socket.disconnect();
-            this.handleError("connect_failed");
-        });
-        this.socket.on("connect_error", e => {
-            this.setState({
-                connected: false
-            });
-            this.socket.disconnect();
-            this.handleError("connect_error");
-        });
-        this.socket.on("arrivedMessage", message => {
-            this.setState((state) => {
-                return {
-                    messages: [message, ...state.messages]
-                }
-            })
-        })
+
+        ioNewMessage();
     };
 
     sendMessage = () => {
-        const { message } = this.state;
-        try {
-            this.socket.emit("sendMessage", { message });
-        } catch (e) {
-            this.handleError(e);
-        }
-    };
-
-    handleError = message => {
-        this.setState({
-            connected: false
-        });
-        Alert.alert("ERROR", message);
+        const { message, username } = this.state;
+        const { all } = this.props;
+        onCreateMessage("anonymous", {
+            message,
+            username
+        })
     };
 
     render() {
-        const { connected } = this.state;
+        const { connected, messages } = this.props;
         return (
             <View style={styles.container}>
                 {!connected && (
@@ -126,15 +79,15 @@ export default class HomeScreen extends Component {
                             title={`Send message ${this.state.username}`}
                             color="#1e1e1e"
                         />
+                        <ScrollView style={styles.messageList}>
+                            {messages.map(({id, data: { message, username }}) => (
+                                <Text key={id} style={styles.messageContainer}>
+                                    <Text style={styles.messageUsername}>{username}:</Text> {message}
+                                </Text>
+                            ))}
+                        </ScrollView>
                     </View>
                 )}
-                <ScrollView style={styles.messageList}>
-                    {this.state.messages.map(item => (
-                        <Text key={item.id} style={styles.messageContainer}>
-                            <Text style={styles.messageUsername}>{item.username}:</Text> {item.message}
-                        </Text>
-                    ))}
-                </ScrollView>
             </View>
         );
     }
@@ -144,6 +97,21 @@ HomeScreen.navigationOptions = {
     title: 'Users',
     };
 
+const mapStateToProps = state => {
+    return {
+        connected: (state.chat.status === "connect" || state.chat.status === "join") ? true : false,
+        messages: state.chat.messages
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        ioConnect: (url, query) => dispatch(onConnect(url, query)),
+        ioNewMessage: (cb) => dispatch(onNewMessage(cb))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
     container: {
