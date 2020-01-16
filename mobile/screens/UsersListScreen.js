@@ -1,5 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Text, SafeAreaView, View, FlatList, Image } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, SafeAreaView, View, FlatList, Image, Button } from 'react-native';
+import { connect } from 'react-redux';
+
+import { fetchUsers, onUpdatedUsers } from "../actions/chatAction";
 
 function Item({ user, onSelect }) {
     return (
@@ -22,13 +25,14 @@ function Item({ user, onSelect }) {
     );
 }
 
-export default function UsersListScreen(props) {
+export function UsersListScreen(props) {
 
-    const users = [
-        {username: "Freya", id: "1", slogan: "Jsbd    hjsdb  sdsds sdsdaf fgfg"},
-        {username: "Valentina", id: "2", slogan: "Poejh sn djsnd s dsj djs dss dnbsd"},
-        {username: "Ohio", id: "3", slogan: "Cdd sdjs djshdsdhsd as ajshajhs"}
-    ];
+
+
+    const { users, onUpdatedUsers } = props;
+
+    onUpdatedUsers();
+
     const {navigate} = props.navigation;
 
     const onSelect = React.useCallback(
@@ -44,13 +48,27 @@ export default function UsersListScreen(props) {
                     <Item user={item} onSelect={onSelect} />}
                 keyExtractor={item => item.id}
             />
+            {(!users || !users.length) && (
+                <View>
+                    <Button
+                        title="Search users"
+                        onPress={() => onUpdatedUsers()}/>
+                </View>
+            )}
         </SafeAreaView>
+
     );
 }
 
 UsersListScreen.navigationOptions = {
     title: 'UsersList',
 };
+
+const mapStateToProps = state => ({
+    users: state.chat.users
+});
+
+export default connect(mapStateToProps, { fetchUsers, onUpdatedUsers })(UsersListScreen)
 
 const styles = StyleSheet.create({
     container: {
