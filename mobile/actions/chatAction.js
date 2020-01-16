@@ -89,6 +89,7 @@ export const onConnect = (url, query) => {
             dispatch(ioFail(err.message));
         });
         dispatch(ioConnected());
+        dispatch(ioJoin(query.username));
     };
 };
 

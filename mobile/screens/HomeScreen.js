@@ -93,6 +93,10 @@ export class HomeScreen extends Component {
     }
 }
 
+HomeScreen.navigationOptions = {
+    title: 'Users',
+    };
+
 const mapStateToProps = state => {
     return {
         connected: (state.chat.status === "connect" || state.chat.status === "join") ? true : false,

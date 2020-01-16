@@ -26,9 +26,6 @@ function Item({ user, onSelect }) {
 }
 
 export function UsersListScreen(props) {
-
-
-
     const { users, onUpdatedUsers } = props;
 
     onUpdatedUsers();
@@ -61,7 +58,7 @@ export function UsersListScreen(props) {
 }
 
 UsersListScreen.navigationOptions = {
-    title: 'UsersList',
+    title: 'Users',
 };
 
 const mapStateToProps = state => ({
