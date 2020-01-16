@@ -21,7 +21,7 @@ io.on('connection', function(socket){
     socket.on('createMessage', function(message){
         const date = new Date();
         messages.unshift({ id: date.getTime(), ...message });
-        io.emit("newMessage", messages);
+        io.emit("newMessage", [...messages].reverse() );
     });
 
     socket.on('setLocation', function(location){

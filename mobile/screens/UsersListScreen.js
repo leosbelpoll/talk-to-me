@@ -26,9 +26,6 @@ function Item({ user, onSelect }) {
 }
 
 export function UsersListScreen(props) {
-
-
-
     const { users, onUpdatedUsers } = props;
 
     onUpdatedUsers();

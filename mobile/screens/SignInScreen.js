@@ -1,8 +1,30 @@
     import React from 'react';
     import { ScrollView, StyleSheet, Button, View, TextInput } from 'react-native';
+    import { connect } from 'react-redux';
 
-    export default function SignInScreen(props) {
+    import {
+        onConnect,
+        onNewMessage
+    } from "../actions/chatAction";
+    import configs from "../configs";
+
+    export function SignInScreen(props) {
     const {navigate} = props.navigation;
+    const [username, setUsername] = React.useState("")
+
+    const connect = () => {
+        const { ioConnect, ioNewMessage } = props;
+        const  URL = configs["SERVER_URL"];
+
+        ioConnect(URL, {
+            username,
+            slogan: "Default slogan for now"
+        });
+
+        ioNewMessage();
+        navigate("Main")
+    };
+
     return (
         <ScrollView style={styles.container}>
         {/**
@@ -11,9 +33,11 @@
          */}
             <View>
                 <TextInput style={styles.textInput}
+                            onChangeText={text => setUsername(text)}
+                            value={username}
                             placeholder={"Enter your name"}
                 />
-                <Button title="Connect" onPress={() => navigate("Main")}/>
+                <Button title="Connect" onPress={() => connect()}/>
             </View> 
         </ScrollView>
     );
@@ -22,6 +46,22 @@
     SignInScreen.navigationOptions = {
     title: 'Please sign in',
     };
+
+    const mapStateToProps = state => {
+        return {
+            connected: (state.chat.status === "connect" || state.chat.status === "join") ? true : false,
+            messages: state.chat.messages
+        };
+    };
+    
+    const mapDispatchToProps = dispatch => {
+        return {
+            ioConnect: (url, query) => dispatch(onConnect(url, query)),
+            ioNewMessage: (cb) => dispatch(onNewMessage(cb))
+        };
+    };
+    
+    export default connect(mapStateToProps, mapDispatchToProps)(SignInScreen);
 
     const styles = StyleSheet.create({
     container: {

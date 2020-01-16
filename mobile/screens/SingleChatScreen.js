@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import { Header } from 'react-navigation-stack';
+import { connect } from 'react-redux';
 
 import styleVariables from "../style_variables";
+import {
+    onCreateMessage,
+    onNewMessage
+} from "../actions/chatAction";
 
-export default class SingleChatScreen  extends Component {
+export class SingleChatScreen  extends Component {
 
     constructor(props) {
         super(props);
@@ -42,28 +47,21 @@ export default class SingleChatScreen  extends Component {
             ]
         }
     }
+    componentDidMount() {
+        this.props.ioNewMessage();
+    }
 
     sendMessage = () => {
-        const { message } = this.state;
-        if (message){
-            this.setState((state) => ({
-                messages: [ ...state.messages, {
-                    id: state.messages.length + 1,
-                    username: "Leito",
-                    text: state.message
-                }],
-                message: ""
-            }))
-        }
-
-        // try {
-        //     this.socket.emit("sendMessage", { message });
-        // } catch (e) {
-        //     this.handleError(e);
-        // }
+        const { message, username } = this.state;
+        const { all } = this.props;
+        onCreateMessage("anonymous", {
+            message,
+            username: this.props.user
+        })
     };
 
     render () {
+        const { user, messages } = this.props;
         return (
             <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={ Header.HEIGHT + 30 } style={[styles.container, {justifyContent: 'center'}]}>
                 <View style={styles.container}>
@@ -74,21 +72,22 @@ export default class SingleChatScreen  extends Component {
                             this.scrollView.scrollToEnd({animated: true});
                         }}
                         showsVerticalScrollIndicator={false}>
-                        {this.state.messages.map((message, index) => (
-                            <View
+                            {messages.map(({id, data: { message, username }}) => (
+                                <View
                                 style={[
                                     styles.chatMessage,
-                                    message.username === this.state.currentUsername ?
+                                    username === user ?
                                         styles.ownMessage : styles.comingMessage,
-                                    index === 0 && {
+                                    {
                                         marginTop: 20
                                     }
                                 ]}
-                                key={message.id}
+                                key={id}
                             >
-                                <Text>{message.text}</Text>
+                                <Text>{message}</Text>
                             </View>
-                        ))}
+                            ))}
+
                     </ScrollView>
                     <View style={styles.chatBox}>
                         <TextInput
@@ -110,6 +109,20 @@ export default class SingleChatScreen  extends Component {
 SingleChatScreen.navigationOptions = {
     title: 'Single Chat',
 };
+
+const mapStateToProps = state => ({
+    messages: state.chat.messages,
+    user: state.chat.user
+});
+
+const mapDispatchToProps = dispatch => {
+    return {
+        ioNewMessage: (cb) => dispatch(onNewMessage(cb))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SingleChatScreen)
+
 
 const styles = StyleSheet.create({
     container: {
