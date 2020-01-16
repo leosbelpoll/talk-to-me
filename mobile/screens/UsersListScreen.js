@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet, Text, SafeAreaView, View, FlatList, Image, Button } from 'react-native';
 import { connect } from 'react-redux';
 
-import { fetchUsers } from "../actions/chatAction";
+import { fetchUsers, onUpdatedUsers } from "../actions/chatAction";
 
 function Item({ user, onSelect }) {
     return (
@@ -27,7 +27,11 @@ function Item({ user, onSelect }) {
 
 export function UsersListScreen(props) {
 
-    const { users, fetchUsers } = props;
+
+
+    const { users, onUpdatedUsers } = props;
+
+    onUpdatedUsers();
 
     const {navigate} = props.navigation;
 
@@ -44,11 +48,13 @@ export function UsersListScreen(props) {
                     <Item user={item} onSelect={onSelect} />}
                 keyExtractor={item => item.id}
             />
-            <View>
-                <Button
-                    title="Search users"
-                    onPress={() => fetchUsers()}/>
-            </View>
+            {(!users || !users.length) && (
+                <View>
+                    <Button
+                        title="Search users"
+                        onPress={() => onUpdatedUsers()}/>
+                </View>
+            )}
         </SafeAreaView>
 
     );
@@ -62,7 +68,7 @@ const mapStateToProps = state => ({
     users: state.chat.users
 });
 
-export default connect(mapStateToProps, { fetchUsers })(UsersListScreen)
+export default connect(mapStateToProps, { fetchUsers, onUpdatedUsers })(UsersListScreen)
 
 const styles = StyleSheet.create({
     container: {

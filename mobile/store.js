@@ -5,16 +5,16 @@ import rootReducer from './reducers';
 
 const initialState ={};
 
-const middleware = [thunk]
+const middleware = [thunk];
 
 const store = createStore(
     rootReducer,
     initialState,
     compose(
-        applyMiddleware(...middleware),
-        // TODO: uncomment/comment to activate/deactivare redux plugin
-        // window.__REDUX_DEVTOOLS_EXTENSION__&& window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
+        applyMiddleware(...middleware)
+    ),
+    // TODO: uncomment/comment to activate/deactivare redux plugin
+    // window.__REDUX_DEVTOOLS_EXTENSION__&& window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 export default store;
