@@ -1,61 +1,61 @@
-import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+import React from "react";
+import { Platform } from "react-native";
+import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 
-import TabBarIcon from '../components/TabBarIcon';
-import UsersListScreen from '../screens/UsersListScreen';
-import LinksScreen from '../screens/LinksScreen';
+import TabBarIcon from "../components/TabBarIcon";
+import UsersListScreen from "../screens/UsersListScreen";
+import LinksScreen from "../screens/LinksScreen";
 
 const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
+    web: { headerMode: "screen" },
+    default: {}
 });
 
 const HomeStack = createStackNavigator(
-  {
-    Home: UsersListScreen,
-  },
-  config
+    {
+        Home: UsersListScreen
+    },
+    config
 );
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Users',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+    tabBarLabel: "Users",
+    tabBarIcon: ({ focused }) => (
+        <TabBarIcon
+            focused={focused}
+            name={
+                Platform.OS === "ios"
+                    ? `ios-information-circle${focused ? "" : "-outline"}`
+                    : "md-information-circle"
+            }
+        />
+    )
 };
 
-HomeStack.path = '';
+HomeStack.path = "";
 
 const LinksStack = createStackNavigator(
-  {
-    Links: LinksScreen,
-  },
-  config
+    {
+        Links: LinksScreen
+    },
+    config
 );
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Chats',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
-  ),
+    tabBarLabel: "Chats",
+    tabBarIcon: ({ focused }) => (
+        <TabBarIcon focused={focused} name={Platform.OS === "ios" ? "ios-link" : "md-link"} />
+    )
 };
 
-LinksStack.path = '';
+LinksStack.path = "";
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack,
-  LinksStack
+    HomeStack,
+    LinksStack
 });
 
-tabNavigator.path = '';
+tabNavigator.path = "";
 
 export default tabNavigator;

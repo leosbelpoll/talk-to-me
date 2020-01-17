@@ -74,7 +74,6 @@ export const ioDisconnected = () => {
 };
 
 export const onConnect = (url, query) => {
-    console.log("onCONNECTE", url, query)
     io = socketIO.connect(url, { query });
     return dispatch => {
         dispatch(ioStart());
@@ -96,7 +95,7 @@ export const onConnect = (url, query) => {
 export const onJoin = user => {
     return dispatch => {
         dispatch(ioStart());
-        io.emit("join", user, (error) => {
+        io.emit("join", user, error => {
             if (error) {
                 dispatch(ioFail(error));
             } else {
@@ -108,7 +107,7 @@ export const onJoin = user => {
 
 export const onLeave = user => {
     return dispatch => {
-        io.emit("leave", user, (error) => {
+        io.emit("leave", user, error => {
             if (error) {
                 dispatch(ioFail(error));
             } else {

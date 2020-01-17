@@ -1,19 +1,26 @@
-import React from 'react';
-import { TouchableOpacity, StyleSheet, Text, SafeAreaView, View, FlatList, Image, Button } from 'react-native';
-import { connect } from 'react-redux';
+import React from "react";
+import {
+    TouchableOpacity,
+    StyleSheet,
+    Text,
+    SafeAreaView,
+    View,
+    FlatList,
+    Image,
+    Button
+} from "react-native";
+import { connect } from "react-redux";
 
 import { fetchUsers, onUpdatedUsers } from "../actions/chatAction";
 
 function Item({ user, onSelect }) {
     return (
-        <TouchableOpacity
-            onPress={() => onSelect(user)}
-            key={user.id}>
+        <TouchableOpacity onPress={() => onSelect(user)} key={user.id}>
             <View style={styles.item}>
                 <View style={styles.leftSide}>
                     <Image
                         style={styles.itemImage}
-                        source={{uri: `https://api.adorable.io/avatars/204/${user.id}.png`}}
+                        source={{ uri: `https://api.adorable.io/avatars/204/${user.id}.png` }}
                     />
                 </View>
                 <View style={styles.rightSide}>
@@ -30,71 +37,64 @@ export function UsersListScreen(props) {
 
     onUpdatedUsers();
 
-    const {navigate} = props.navigation;
+    const { navigate } = props.navigation;
 
-    const onSelect = React.useCallback(
-        user => {
-            navigate("SingleChat", user)
-        });
+    const onSelect = React.useCallback(user => {
+        navigate("SingleChat", user);
+    });
 
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
                 data={users}
-                renderItem={({ item }) =>
-                    <Item user={item} onSelect={onSelect} />}
+                renderItem={({ item }) => <Item user={item} onSelect={onSelect} />}
                 keyExtractor={item => item.id}
             />
             {(!users || !users.length) && (
                 <View>
-                    <Button
-                        title="Search users"
-                        onPress={() => onUpdatedUsers()}/>
+                    <Button title="Search users" onPress={() => onUpdatedUsers()} />
                 </View>
             )}
         </SafeAreaView>
-
     );
 }
 
 UsersListScreen.navigationOptions = {
-    title: 'Users',
+    title: "Users"
 };
 
 const mapStateToProps = state => ({
     users: state.chat.users
 });
 
-export default connect(mapStateToProps, { fetchUsers, onUpdatedUsers })(UsersListScreen)
+export default connect(mapStateToProps, { fetchUsers, onUpdatedUsers })(UsersListScreen);
 
 const styles = StyleSheet.create({
-    container: {
-
-    },
+    container: {},
     item: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: "row",
         padding: 10,
-        borderBottomColor: 'rgba(0, 0, 0, .06)',
-        borderBottomWidth: 1,
+        borderBottomColor: "rgba(0, 0, 0, .06)",
+        borderBottomWidth: 1
     },
     name: {
-        fontWeight: 'bold',
+        fontWeight: "bold"
     },
     slogan: {
-        color: 'rgba(0, 0, 0, .6)'
+        color: "rgba(0, 0, 0, .6)"
     },
     itemImage: {
         width: 50,
         height: 50,
         borderRadius: 50 / 2,
-        overflow: "hidden",
+        overflow: "hidden"
     },
     leftSide: {
         width: 50,
         marginRight: 20
     },
     rightSide: {
-        paddingTop: 3,
+        paddingTop: 3
     }
 });

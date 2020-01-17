@@ -20,7 +20,7 @@ const initState = {
     rooms: []
 };
 
-const ioStart = (state) => {
+const ioStart = state => {
     return {
         ...state,
         loading: true,
@@ -29,7 +29,7 @@ const ioStart = (state) => {
     };
 };
 
-const ioConnected = (state) => {
+const ioConnected = state => {
     return {
         ...state,
         status: "connect",
@@ -49,7 +49,7 @@ const ioJoin = (state, { user }) => {
     };
 };
 
-const ioLeave = (state) => {
+const ioLeave = state => {
     return {
         ...state,
         status: "leave",
@@ -87,7 +87,7 @@ const ioFail = (state, { error }) => {
     };
 };
 
-const ioDisconnected = (state) => {
+const ioDisconnected = state => {
     return {
         ...state,
         status: "disconnect",

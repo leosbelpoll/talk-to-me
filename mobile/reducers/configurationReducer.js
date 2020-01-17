@@ -4,12 +4,12 @@ const initialState = {
     receiveNotifications: false
 };
 
-export default function (state = initialState, { type, payload }){
-    switch(type){
+export default function(state = initialState, { type, payload }) {
+    switch (type) {
         case SET_RECEIVE_NOTIFICATIONS:
             return {
                 ...state,
-                users: payload,
+                users: payload
             };
         case ERROR:
             return {
