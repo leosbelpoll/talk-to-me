@@ -1,7 +1,6 @@
 import { SET_RECEIVE_NOTIFICATIONS, ERROR } from "./types";
 
 export const setReceiveNotifications = () => dispatch => {
-
     // some logic
 
     return dispatch({
@@ -11,7 +10,6 @@ export const setReceiveNotifications = () => dispatch => {
 };
 
 export const setError = () => dispatch => {
-
     // some logic
 
     return dispatch({

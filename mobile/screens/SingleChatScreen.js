@@ -1,16 +1,20 @@
-import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
-import { Header } from 'react-navigation-stack';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import {
+    ScrollView,
+    StyleSheet,
+    View,
+    Text,
+    TextInput,
+    Button,
+    KeyboardAvoidingView
+} from "react-native";
+import { Header } from "react-navigation-stack";
+import { connect } from "react-redux";
 
 import styleVariables from "../style_variables";
-import {
-    onCreateMessage,
-    onNewMessage
-} from "../actions/chatAction";
+import { onCreateMessage, onNewMessage } from "../actions/chatAction";
 
-export class SingleChatScreen  extends Component {
-
+export class SingleChatScreen extends Component {
     constructor(props) {
         super(props);
         // const { username } = props.navigation.state.params;
@@ -45,7 +49,7 @@ export class SingleChatScreen  extends Component {
                     text: "Yeah, we are going to have the MVP soon hahah"
                 }
             ]
-        }
+        };
     }
     componentDidMount() {
         this.props.ioNewMessage();
@@ -57,43 +61,44 @@ export class SingleChatScreen  extends Component {
         onCreateMessage("anonymous", {
             message,
             username: this.props.user
-        })
+        });
     };
 
-    render () {
+    render() {
         const { user, messages } = this.props;
         return (
-            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={ Header.HEIGHT + 30 } style={[styles.container, {justifyContent: 'center'}]}>
+            <KeyboardAvoidingView
+                behavior="padding"
+                keyboardVerticalOffset={Header.HEIGHT + 30}
+                style={[styles.container, { justifyContent: "center" }]}>
                 <View style={styles.container}>
                     <ScrollView
                         style={styles.messagesContainer}
-                        ref={ref => this.scrollView = ref}
-                        onContentSizeChange={()=>{
-                            this.scrollView.scrollToEnd({animated: true});
+                        ref={ref => (this.scrollView = ref)}
+                        onContentSizeChange={() => {
+                            this.scrollView.scrollToEnd({ animated: true });
                         }}
                         showsVerticalScrollIndicator={false}>
-                            {messages.map(({id, data: { message, username }}) => (
-                                <View
+                        {messages.map(({ id, data: { message, username } }) => (
+                            <View
                                 style={[
                                     styles.chatMessage,
-                                    username === user ?
-                                        styles.ownMessage : styles.comingMessage,
+                                    username === user ? styles.ownMessage : styles.comingMessage,
                                     {
                                         marginTop: 20
                                     }
                                 ]}
-                                key={id}
-                            >
+                                key={id}>
                                 <Text>{message}</Text>
                             </View>
-                            ))}
-
+                        ))}
                     </ScrollView>
                     <View style={styles.chatBox}>
                         <TextInput
                             style={styles.textInput}
                             onChangeText={text => this.setState({ message: text })}
-                            value={this.state.message}/>
+                            value={this.state.message}
+                        />
                         <Button
                             onPress={this.sendMessage}
                             title={`Sw`}
@@ -107,7 +112,7 @@ export class SingleChatScreen  extends Component {
 }
 
 SingleChatScreen.navigationOptions = {
-    title: 'Single Chat',
+    title: "Single Chat"
 };
 
 const mapStateToProps = state => ({
@@ -117,12 +122,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return {
-        ioNewMessage: (cb) => dispatch(onNewMessage(cb))
+        ioNewMessage: cb => dispatch(onNewMessage(cb))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleChatScreen)
-
+export default connect(mapStateToProps, mapDispatchToProps)(SingleChatScreen);
 
 const styles = StyleSheet.create({
     container: {
@@ -136,24 +140,22 @@ const styles = StyleSheet.create({
         padding: 10
     },
     chatBox: {
-        display: 'flex'
+        display: "flex"
     },
-    messagesContainer: {
-
-    },
-    chatMessage:{
+    messagesContainer: {},
+    chatMessage: {
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 20,
         marginBottom: 10,
-        maxWidth: '70%'
+        maxWidth: "70%"
     },
     ownMessage: {
-        alignSelf: 'flex-end',
+        alignSelf: "flex-end",
         backgroundColor: `${styleVariables.PRIMARY_COLOR}30`
     },
     comingMessage: {
-        alignSelf: 'flex-start',
-        backgroundColor: 'rgba(0, 0, 0, .06)'
+        alignSelf: "flex-start",
+        backgroundColor: "rgba(0, 0, 0, .06)"
     }
 });

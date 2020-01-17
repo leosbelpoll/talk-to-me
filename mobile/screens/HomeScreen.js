@@ -1,28 +1,15 @@
-import React, {Component} from 'react';
-import {
-    Button,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    YellowBox
-} from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { Button, ScrollView, StyleSheet, Text, View, TextInput, YellowBox } from "react-native";
+import { connect } from "react-redux";
 
-import {
-    onConnect,
-    onCreateMessage,
-    onNewMessage
-} from "../actions/chatAction";
+import { onConnect, onCreateMessage, onNewMessage } from "../actions/chatAction";
 import configs from "../configs";
 
 YellowBox.ignoreWarnings([
-    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+    "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
 ]);
 
 export class HomeScreen extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -34,7 +21,7 @@ export class HomeScreen extends Component {
     connect = () => {
         const { ioConnect, ioNewMessage } = this.props;
         const { username } = this.state;
-        const  URL = configs["SERVER_URL"];
+        const URL = configs["SERVER_URL"];
 
         ioConnect(URL, {
             username,
@@ -50,7 +37,7 @@ export class HomeScreen extends Component {
         onCreateMessage("anonymous", {
             message,
             username
-        })
+        });
     };
 
     render() {
@@ -59,20 +46,22 @@ export class HomeScreen extends Component {
             <View style={styles.container}>
                 {!connected && (
                     <View>
-                        <TextInput style={styles.textInput}
-                                   onChangeText={text => this.setState({username: text})}
-                                   value={this.state.username}
-                                   placeholder={"Enter your name"}
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={text => this.setState({ username: text })}
+                            value={this.state.username}
+                            placeholder={"Enter your name"}
                         />
-                        <Button onPress={this.connect} title={"Connect"}/>
+                        <Button onPress={this.connect} title={"Connect"} />
                     </View>
                 )}
                 {connected && (
                     <View>
-                        <TextInput style={styles.textInput}
-                                   onChangeText={text => this.setState({message: text})}
-                                   value={this.state.message}
-                                   placeholder={"Write your message"}
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={text => this.setState({ message: text })}
+                            value={this.state.message}
+                            placeholder={"Write your message"}
                         />
                         <Button
                             onPress={this.sendMessage}
@@ -80,9 +69,10 @@ export class HomeScreen extends Component {
                             color="#1e1e1e"
                         />
                         <ScrollView style={styles.messageList}>
-                            {messages.map(({id, data: { message, username }}) => (
+                            {messages.map(({ id, data: { message, username } }) => (
                                 <Text key={id} style={styles.messageContainer}>
-                                    <Text style={styles.messageUsername}>{username}:</Text> {message}
+                                    <Text style={styles.messageUsername}>{username}:</Text>{" "}
+                                    {message}
                                 </Text>
                             ))}
                         </ScrollView>
@@ -94,12 +84,12 @@ export class HomeScreen extends Component {
 }
 
 HomeScreen.navigationOptions = {
-    title: 'Users',
-    };
+    title: "Users"
+};
 
 const mapStateToProps = state => {
     return {
-        connected: (state.chat.status === "connect" || state.chat.status === "join") ? true : false,
+        connected: state.chat.status === "connect" || state.chat.status === "join" ? true : false,
         messages: state.chat.messages
     };
 };
@@ -107,7 +97,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         ioConnect: (url, query) => dispatch(onConnect(url, query)),
-        ioNewMessage: (cb) => dispatch(onNewMessage(cb))
+        ioNewMessage: cb => dispatch(onNewMessage(cb))
     };
 };
 
@@ -120,7 +110,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: 40,
-        borderColor: 'rgba(0, 0, 0, .2)',
+        borderColor: "rgba(0, 0, 0, .2)",
         borderWidth: 1,
         marginTop: 15,
         marginBottom: 15,
@@ -133,9 +123,9 @@ const styles = StyleSheet.create({
     messageContainer: {
         paddingTop: 10,
         paddingBottom: 10,
-        borderBottomColor: 'rgba(0, 0, 0, .3)'
+        borderBottomColor: "rgba(0, 0, 0, .3)"
     },
     messageUsername: {
-        fontWeight: 'bold'
+        fontWeight: "bold"
     }
 });

@@ -1,5 +1,5 @@
 // Commons
-export const ERROR = 'ERROR';
+export const ERROR = "ERROR";
 
 // Chat
 export const IO_START = "IO_START";
@@ -13,4 +13,4 @@ export const IO_MESSAGE = "IO_MESSAGE";
 export const IO_UPDATED_ROOMS = "IO_UPDATED_ROOMS";
 
 // Configurations
-export const SET_RECEIVE_NOTIFICATIONS = 'SET_RECEIVE_NOTIFICATIONS';
+export const SET_RECEIVE_NOTIFICATIONS = "SET_RECEIVE_NOTIFICATIONS";
