@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { onDisconnect } from "../actions/chatAction";
 
-function Item({ user, onSelect }) {
+export function Item({ user, onSelect }) {
     return (
         <TouchableOpacity onPress={() => onSelect(user)} key={user.id}>
             <View style={styles.item}>
@@ -26,10 +26,10 @@ function Item({ user, onSelect }) {
 export function UsersListScreen(props) {
     const { users } = props;
 
-    const { navigate } = props.navigation;
+    const { navigate,push } = props.navigation;
 
     const onSelect = React.useCallback(user => {
-        navigate("SingleChat", user);
+        navigate("SingleChata", user);
     });
 
     return (

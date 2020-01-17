@@ -9,7 +9,7 @@ export default function LinksScreen(props) {
              * Go ahead and delete ExpoLinksView and replace it with your content;
              * we just wanted to provide you with some helpful links.
              */}
-            <Button title="Go Users" onPress={() => navigate("UsersList")} />
+            <Button title="Go Chat" onPress={() => navigate("SingleChat", {username: "aaaa", id: 1111})} />
         </ScrollView>
     );
 }
