@@ -75,7 +75,7 @@ export class SingleChatScreen extends Component {
                                     }
                                 ]}
                                 key={id}>
-                                <Text>{username}  {message}</Text>
+                                <Text>{message}</Text>
                             </View>
                         ))}
                     </ScrollView>

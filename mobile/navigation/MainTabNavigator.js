@@ -16,7 +16,6 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
     {
         Home: UsersListScreen,
-        SingleChat: SingleChatScreen
     },
     config
 );
@@ -40,7 +39,7 @@ HomeStack.path = "";
 const LinksStack = createStackNavigator(
     {
         Links: LinksScreen,
-        SingleChata: SingleChatScreen
+        SingleChat: SingleChatScreen
     },
     config
 );

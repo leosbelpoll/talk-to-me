@@ -29,7 +29,7 @@ export function UsersListScreen(props) {
     const { navigate,push } = props.navigation;
 
     const onSelect = React.useCallback(user => {
-        navigate("SingleChata", user);
+        navigate("SingleChat", user);
     });
 
     return (
