@@ -4,6 +4,8 @@ import {
     IO_MESSAGE,
     IO_FAIL,
     IO_DISCONNECTED,
+    IO_NEW_USER_CONNECTED,
+    IO_USER_DISCONNECTED,
     IO_UPDATED_USERS,
     IO_UPDATED_ROOMS,
     IO_JOIN,
@@ -69,7 +71,23 @@ const ioMessage = (state, { messages }) => {
 const ioUpdatedUsers = (state, { users }) => {
     return {
         ...state,
-        users
+        users: users.filter(us => us.id != state.user.id)
+    };
+};
+
+const ioNewUserConnected = (state, { user }) => {
+    return {
+        ...state,
+        users: user.id === state.user.id ? state.users : [user, ...state.users]
+    };
+};
+
+const ioUserDisconnected = (state, { socketId }) => {
+    console.log("userDisconn", socketId);
+    
+    return {
+        ...state,
+        users: state.users.filter(us => us.socketId != socketId)
     };
 };
 
@@ -113,6 +131,10 @@ const reducer = (state = initState, action) => {
             return ioMessage(state, action);
         case IO_UPDATED_USERS:
             return ioUpdatedUsers(state, action);
+        case IO_NEW_USER_CONNECTED:
+            return ioNewUserConnected(state, action);
+        case IO_USER_DISCONNECTED:
+            return ioUserDisconnected(state, action);
         case IO_UPDATED_ROOMS:
             return ioUpdatedRooms(state, action);
         case IO_FAIL:

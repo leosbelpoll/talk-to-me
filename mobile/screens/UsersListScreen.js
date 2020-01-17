@@ -1,17 +1,8 @@
 import React from "react";
-import {
-    TouchableOpacity,
-    StyleSheet,
-    Text,
-    SafeAreaView,
-    View,
-    FlatList,
-    Image,
-    Button
-} from "react-native";
+import { TouchableOpacity, StyleSheet, Text, View, FlatList, Image } from "react-native";
 import { connect } from "react-redux";
 
-import { fetchUsers, onUpdatedUsers } from "../actions/chatAction";
+import { onDisconnect } from "../actions/chatAction";
 
 function Item({ user, onSelect }) {
     return (
@@ -33,9 +24,7 @@ function Item({ user, onSelect }) {
 }
 
 export function UsersListScreen(props) {
-    const { users, onUpdatedUsers } = props;
-
-    onUpdatedUsers();
+    const { users } = props;
 
     const { navigate } = props.navigation;
 
@@ -44,18 +33,20 @@ export function UsersListScreen(props) {
     });
 
     return (
-        <SafeAreaView style={styles.container}>
-            <FlatList
-                data={users}
-                renderItem={({ item }) => <Item user={item} onSelect={onSelect} />}
-                keyExtractor={item => item.id}
-            />
-            {(!users || !users.length) && (
+        <View style={styles.container}>
+            {users.length > 0 && (
+                <FlatList
+                    data={users}
+                    renderItem={({ item }) => <Item user={item} onSelect={onSelect} />}
+                    keyExtractor={item => item.id}
+                />
+            )}
+            {users.length == 0 && (
                 <View>
-                    <Button title="Search users" onPress={() => onUpdatedUsers()} />
+                    <Text>No body else right now</Text>
                 </View>
             )}
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -67,10 +58,12 @@ const mapStateToProps = state => ({
     users: state.chat.users
 });
 
-export default connect(mapStateToProps, { fetchUsers, onUpdatedUsers })(UsersListScreen);
+export default connect(mapStateToProps, { onDisconnect })(UsersListScreen);
 
 const styles = StyleSheet.create({
-    container: {},
+    container: {
+        flex: 1
+    },
     item: {
         flex: 1,
         flexDirection: "row",

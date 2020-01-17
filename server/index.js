@@ -1,38 +1,52 @@
-const location = require("./utils/coordenates")
-const app = require('express')();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const location = require("./utils/coordenates");
+const app = require("express")();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 const PORT = process.env.PORT || 3000;
 
 const messages = [];
-const users = [];
+let users = [];
 
-io.on('connection', function(socket){
-    console.log('Socket connected', socket.id, socket.handshake.query);
-    const { id, handshake } = socket;
-    users.unshift({
+io.on("connection", function(socket) {
+    const {
+        id: socketId,
+        handshake: {
+            query: { id, username, slogan }
+        }
+    } = socket;
+    const newUserConnected = {
         id,
-        username: handshake.query.username,
-        slogan: handshake.query.slogan
-    });
+        socketId,
+        username: username,
+        slogan: slogan
+    };
 
-    io.emit("updatedUsers", users);
+    socket.emit("updatedUsers", users);
+    io.emit("newUserConnected", newUserConnected);
 
-    socket.on('createMessage', function(message){
+    users.push(newUserConnected);
+
+    console.log("New user connected", newUserConnected);
+
+    
+
+    socket.on("createMessage", function(message) {
         const date = new Date();
         messages.unshift({ id: date.getTime(), ...message });
-        io.emit("newMessage", [...messages].reverse() );
+        io.emit("newMessage", [...messages].reverse());
     });
 
-    socket.on('setLocation', function(location){
-        console.log('S', location);
+    socket.on("setLocation", function(location) {
+        console.log("S", location);
     });
 
-    socket.on('disconnect', function(socket){
-        console.log('Socket disconnected', socket.id);
+    socket.on("disconnect", function() {
+        users = users.filter(us => us.socketId != socket.id);
+        io.emit("userDisconnected", socket.id);
+        console.log("Socket disconnected", socket.id);
     });
 });
 
-http.listen(PORT, function(){
+http.listen(PORT, function() {
     console.log(`Server running on *:${PORT}`);
 });

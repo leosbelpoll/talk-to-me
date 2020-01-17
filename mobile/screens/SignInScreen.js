@@ -1,8 +1,15 @@
 import React from "react";
 import { ScrollView, StyleSheet, Button, View, TextInput } from "react-native";
 import { connect } from "react-redux";
+import uuid from "uuid";
 
-import { onConnect, onNewMessage } from "../actions/chatAction";
+import {
+    onConnect,
+    onNewMessage,
+    onUpdatedUsers,
+    onNewUserConnected,
+    onUserDisconnected
+} from "../actions/chatAction";
 import configs from "../configs";
 
 export function SignInScreen(props) {
@@ -10,15 +17,19 @@ export function SignInScreen(props) {
     const [username, setUsername] = React.useState("");
 
     const connect = () => {
-        const { ioConnect, ioNewMessage } = props;
+        const { ioConnect, ioNewMessage, ioUpdatedUsers, ioNewUserConnected, ioUserDisconnected } = props;
         const URL = configs["SERVER_URL"];
 
         ioConnect(URL, {
+            id: uuid(),
             username,
             slogan: "Default slogan for now"
         });
 
+        ioUpdatedUsers();
+        ioNewUserConnected();
         ioNewMessage();
+        ioUserDisconnected();
         navigate("Main");
     };
 
@@ -55,7 +66,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         ioConnect: (url, query) => dispatch(onConnect(url, query)),
-        ioNewMessage: cb => dispatch(onNewMessage(cb))
+        ioNewMessage: cb => dispatch(onNewMessage(cb)),
+        ioUpdatedUsers: cb => dispatch(onUpdatedUsers()),
+        ioNewUserConnected: cb => dispatch(onNewUserConnected()),
+        ioUserDisconnected: cb => dispatch(onUserDisconnected())
     };
 };
 
