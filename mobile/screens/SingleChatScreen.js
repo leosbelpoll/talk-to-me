@@ -10,8 +10,6 @@ import {
 } from "react-native";
 import { Header } from "react-navigation-stack";
 import { connect } from "react-redux";
-import TabBarIcon from "../components/TabBarIcon";
-import {Item} from './UsersListScreen'
 
 import styleVariables from "../style_variables";
 import { onCreateMessage, onNewMessage } from "../actions/chatAction";
@@ -84,6 +82,7 @@ export class SingleChatScreen extends Component {
                             style={styles.textInput}
                             onChangeText={text => this.setState({ message: text })}
                             value={this.state.message}
+                            onEndEditing={this.sendMessage}
                         />
                         <Button
                             onPress={this.sendMessage}

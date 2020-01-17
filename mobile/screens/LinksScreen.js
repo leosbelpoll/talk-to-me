@@ -15,7 +15,7 @@ export default function LinksScreen(props) {
 }
 
 LinksScreen.navigationOptions = {
-    title: "Links"
+    title: "Chats"
 };
 
 const styles = StyleSheet.create({

@@ -38,7 +38,7 @@ HomeStack.path = "";
 
 const LinksStack = createStackNavigator(
     {
-        Links: LinksScreen,
+        Chats: LinksScreen,
         SingleChat: SingleChatScreen
     },
     config
