@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import TabBarIcon from "../components/TabBarIcon";
 import UsersListScreen from "../screens/UsersListScreen";
 import LinksScreen from "../screens/LinksScreen";
+import SingleChatScreen from "../screens/SingleChatScreen";
 
 const config = Platform.select({
     web: { headerMode: "screen" },
@@ -14,7 +15,7 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
     {
-        Home: UsersListScreen
+        Home: UsersListScreen,
     },
     config
 );
@@ -37,7 +38,8 @@ HomeStack.path = "";
 
 const LinksStack = createStackNavigator(
     {
-        Links: LinksScreen
+        Chats: LinksScreen,
+        SingleChat: SingleChatScreen
     },
     config
 );

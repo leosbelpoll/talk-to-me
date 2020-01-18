@@ -15,40 +15,21 @@ import styleVariables from "../style_variables";
 import { onCreateMessage, onNewMessage } from "../actions/chatAction";
 
 export class SingleChatScreen extends Component {
+    static navigationOptions = ({ navigation }) => {
+        const user = navigation.state.params;
+        return {
+            title: user.username,
+            // headerTitle: () => <Item user={user} />,
+            headerRight: () => <Button onPress={() => alert("This is a button!")} title="Edit" />
+        };
+    };
+
     constructor(props) {
         super(props);
-        // const { username } = props.navigation.state.params;
-        const { username } = { username: "Leito" }; // TODO: remove this, just a Mock
+        this.user = props.navigation.state.params;
         this.state = {
-            currentUsername: username,
             message: "",
-            messages: [
-                {
-                    id: 1,
-                    username: "Leito",
-                    text: "Hello"
-                },
-                {
-                    id: 2,
-                    username: "Tomas",
-                    text: "Hey, how are you"
-                },
-                {
-                    id: 3,
-                    username: "Leito",
-                    text: "Everything ok, working on our awesome app :)"
-                },
-                {
-                    id: 4,
-                    username: "Leito",
-                    text: "It's advancing"
-                },
-                {
-                    id: 5,
-                    username: "Tomas",
-                    text: "Yeah, we are going to have the MVP soon hahah"
-                }
-            ]
+            messages: []
         };
     }
     componentDidMount() {
@@ -60,12 +41,13 @@ export class SingleChatScreen extends Component {
         const { all } = this.props;
         onCreateMessage("anonymous", {
             message,
-            username: this.props.user
+            username: this.props.currentUser.username
         });
     };
 
     render() {
-        const { user, messages } = this.props;
+        const { currentUser, messages } = this.props;
+        console.log(messages[0]);
         return (
             <KeyboardAvoidingView
                 behavior="padding"
@@ -83,7 +65,9 @@ export class SingleChatScreen extends Component {
                             <View
                                 style={[
                                     styles.chatMessage,
-                                    username === user ? styles.ownMessage : styles.comingMessage,
+                                    username === currentUser.username
+                                        ? styles.ownMessage
+                                        : styles.comingMessage,
                                     {
                                         marginTop: 20
                                     }
@@ -98,10 +82,11 @@ export class SingleChatScreen extends Component {
                             style={styles.textInput}
                             onChangeText={text => this.setState({ message: text })}
                             value={this.state.message}
+                            onEndEditing={this.sendMessage}
                         />
                         <Button
                             onPress={this.sendMessage}
-                            title={`Sw`}
+                            title={`Send`}
                             color={styleVariables.PRIMARY_COLOR}
                         />
                     </View>
@@ -111,13 +96,9 @@ export class SingleChatScreen extends Component {
     }
 }
 
-SingleChatScreen.navigationOptions = {
-    title: "Single Chat"
-};
-
 const mapStateToProps = state => ({
     messages: state.chat.messages,
-    user: state.chat.user
+    currentUser: state.chat.user
 });
 
 const mapDispatchToProps = dispatch => {
